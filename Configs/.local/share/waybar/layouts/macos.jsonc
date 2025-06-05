@@ -5,6 +5,9 @@
   "spacing": 10,
   "border-size": 1,
   "padding": 1,
+  "include": [
+    "$XDG_CONFIG_HOME/waybar/includes/includes.json" 
+  ],
   // Modules configuration
   "modules-left": [
     "custom/launcher",
@@ -14,7 +17,7 @@
     "custom/text#four",
     "custom/text#five"
   ],
-  "modules-right": ["image#profile", "image#hyde-menu", "clock#date", "clock"],
+  "modules-right": ["image#wallpaper", "clock#date", "clock"],
   // Module-specific configurations
   "clock#12": {
     "format": "{:%H:%M %p}",

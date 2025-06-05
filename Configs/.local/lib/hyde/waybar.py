@@ -944,13 +944,14 @@ def update_icon_size():
                     data[key] = modify_json_key(
                         value, "tooltip-icon-size", final_icon_size
                     )
+                    data[key] = modify_json_key(value, "size", final_icon_size)
 
             updated_entries.update(data)
 
     includes_data.update(updated_entries)
 
     with open(includes_file, "w") as file:
-        json.dump(includes_data, file, indent=4)
+        json.dump(includes_data, file, indent=10)
     logger.debug(
         f"Successfully updated icon sizes and appended to '{includes_file}' with {len(updated_entries)} entries."
     )
