@@ -388,6 +388,8 @@ def list_layouts():
             {
                 "name": f"List all {len(backup_layouts)} Backup(s) saved",
                 "style": "",
+                "layout": "",
+                "is_backup_entry": True,
             }
         )
 
@@ -951,7 +953,7 @@ def update_icon_size():
     includes_data.update(updated_entries)
 
     with open(includes_file, "w") as file:
-        json.dump(includes_data, file, indent=10)
+        json.dump(includes_data, file, indent=4)
     logger.debug(
         f"Successfully updated icon sizes and appended to '{includes_file}' with {len(updated_entries)} entries."
     )
