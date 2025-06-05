@@ -18,7 +18,6 @@
       "waybar-layout-select": "hyde-shell waybar -j",
       "waybar-layout-next": "hyde-shell waybar --update --next",
       "waybar-layout-previous": "hyde-shell waybar --update --prev",
-      "checkbox": "notify-send 'Checkbox' 'This is a checkbox'",
       "about-hyde": "xdg-open https://hydeproject.pages.dev"
     }
   }

@@ -20,7 +20,6 @@
       "waybar-layout-next": "hyde-shell waybar --update --next",
       "waybar-layout-previous": "hyde-shell waybar --update --prev",
       "workflows-select": "hyde-shell workflows --select",
-      "checkbox": "notify-send 'Checkbox' 'This is a checkbox'",
       "about-hyde": "xdg-open https://hydeproject.pages.dev"
     }
   }
