@@ -37,7 +37,17 @@ function _load_post_init() {
     # Add your completions directory to fpath
     fpath=($ZDOTDIR/completions "${fpath[@]}")
 
-    autoload -U compinit && compinit
+    # Initialize completions with optimized performance
+    autoload -Uz compinit
+    
+    HYDE_ZSH_COMPINIT_CHECK=${HYDE_ZSH_COMPINIT_CHECK:-1}
+    if [[ -n ${ZDOTDIR}/.zcompdump(#qN.mh+${HYDE_ZSH_COMPINIT_CHECK}) ]]; then 
+        compinit
+    else
+        compinit -C
+    fi
+    
+    _comp_options+=(globdots) # tab complete hidden files
 
     for file in "${ZDOTDIR:-$HOME/.config/zsh}/completions/"*.zsh; do
         [ -r "$file" ] && source "$file"

@@ -21,5 +21,6 @@ plugins=(
 )
 
 #   Overrides 
-# unset HYDE_ZSH_DEFER # Uncomment to disable deferred loading of zsh and let you load you plugin YOURSELF example using zinit 
+# unset HYDE_ZSH_DEFER # Uncomment to disable deferred loading of zsh and let you load you plugin YOURSELF example using zinit
 # unset HYDE_ZSH_PROMPT # Uncomment to unset/disable loading of prompts from HyDE and let you load your own prompts
+# HYDE_ZSH_COMPINIT_CHECK=1 # Set 24 (hours) per compinit security check // lessens startup time
