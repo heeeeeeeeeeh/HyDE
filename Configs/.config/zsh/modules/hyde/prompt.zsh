@@ -16,7 +16,7 @@ if command -v starship &>/dev/null; then
     export STARSHIP_CACHE=$XDG_CACHE_HOME/starship
     export STARSHIP_CONFIG=$XDG_CONFIG_HOME/starship/starship.toml
 # ===== END Initialize Starship prompt =====
-elif [ -r $HOME/.p10k.zsh ] || [ $ZDOTDIR/.p10k.zsh ] ; then
+elif [ -r $HOME/.p10k.zsh ] || [ -r $ZDOTDIR/.p10k.zsh ] ; then
     # ===== START Initialize Powerlevel10k theme =====
     POWERLEVEL10K_TRANSIENT_PROMPT=same-dir
     P10k_THEME=${P10k_THEME:-/usr/share/zsh-theme-powerlevel10k/powerlevel10k.zsh-theme}
