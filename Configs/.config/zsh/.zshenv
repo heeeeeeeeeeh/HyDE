@@ -14,10 +14,3 @@
 for file in "${ZDOTDIR:-$HOME/.config/zsh}/conf.d/"*.zsh; do
   [ -r "$file" ] && source "$file"
 done
-
-
-# Load all custom function files // Directories are ignored
-for file in "${ZDOTDIR:-$HOME/.config/zsh}/functions/"*.zsh; do
-  [ -r "$file" ] && source "$file"
-done
-

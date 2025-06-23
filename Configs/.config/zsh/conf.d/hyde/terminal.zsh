@@ -43,13 +43,15 @@ function _load_post_init() {
         [ -r "$file" ] && source "$file"
     done
 
+    # Load all custom function files // Directories are ignored
+    for file in "${ZDOTDIR:-$HOME/.config/zsh}/functions/"*.zsh; do
+        [ -r "$file" ] && source "$file"
+    done
+
     # zsh-autosuggestions won't work on first prompt when deferred
     if typeset -f _zsh_autosuggest_start >/dev/null; then
         _zsh_autosuggest_start
     fi
-
-    # User rc file always overrides
-    [[ -f $HOME/.zshrc ]] && source $HOME/.zshrc
 
 }
 

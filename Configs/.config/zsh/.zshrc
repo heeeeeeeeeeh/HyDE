@@ -1,7 +1,7 @@
 # Add user configurations here
 # For HyDE to not touch your beloved configurations,
 # we added a config file for you to customize HyDE before loading zshrc
-# Edit $ZDOTDIR/.user.zsh to customize HyDE before loading zshrc 
+# Edit $ZDOTDIR/.user.zsh to customize HyDE before loading zshrc
 
 #  Plugins 
 # oh-my-zsh plugins are loaded  in $ZDOTDIR/.user.zsh file, see the file for more information
@@ -35,30 +35,9 @@
 # # Always mkdir a path (this doesn't inhibit functionality to make a single dir)
 # alias mkdir='mkdir -p'
 
-
 #  This is your file 
 # Add your configurations here
 # export EDITOR=nvim
 export EDITOR=code
 
 # unset -f command_not_found_handler # Uncomment to prevent searching for commands not found in package manager
-
-# ---
-export EDITOR=vscodium
-
-alias vc='vscodium'
-alias GC='gh copilot'
-alias GCE='gh copilot explain'
-alias GCS='gh copilot suggest'
-alias vi='nvim'
-# alias find='fd'
-
-# # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
-# [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
-
-# [[ -f ~/.nvimsrc ]] && source ~/.nvimsrc
-#
-#
-# unset -f command_not_found_handler
-source ~/.nvimsrc
-
