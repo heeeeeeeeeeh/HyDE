@@ -45,19 +45,13 @@ function _load_persistent_aliases {
 
 }
 
-function _load_omz_on_init() {
-    # Load oh-my-zsh when line editor initializes // before user input
-    if [[ -n $DEFER_OMZ_LOAD ]]; then
-        unset DEFER_OMZ_LOAD
-        [[ -r $ZSH/oh-my-zsh.sh ]] && source $ZSH/oh-my-zsh.sh
-        ZDOTDIR="${__ZDOTDIR:-${XDG_CONFIG_HOME:-$HOME/.config}/zsh}"
-        _load_post_init
-    fi
-}
-
 function _load_post_init() {
     #! Never load time consuming functions here
     _load_persistent_aliases
+
+    # Add your completions directory to fpath
+    fpath=($ZDOTDIR/completions "${fpath[@]}")
+
     autoload -U compinit && compinit
 
     for file in "${ZDOTDIR:-$HOME/.config/zsh}/completions/"*.zsh; do
@@ -73,6 +67,17 @@ function _load_post_init() {
     [[ -f $HOME/.zshrc ]] && source $HOME/.zshrc
 
 }
+
+function _load_omz_on_init() {
+    # Load oh-my-zsh when line editor initializes // before user input
+    if [[ -n $DEFER_OMZ_LOAD ]]; then
+        unset DEFER_OMZ_LOAD
+        [[ -r $ZSH/oh-my-zsh.sh ]] && source $ZSH/oh-my-zsh.sh
+        ZDOTDIR="${__ZDOTDIR:-${XDG_CONFIG_HOME:-$HOME/.config}/zsh}"
+        _load_post_init
+    fi
+}
+
 function do_render {
     # Check if the terminal supports images
     local type="${1:-image}"
