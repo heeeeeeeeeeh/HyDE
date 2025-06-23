@@ -55,22 +55,14 @@ function _load_omz_on_init() {
     fi
 }
 
-
 function _load_post_init() {
     #! Never load time consuming functions here
     _load_persistent_aliases
     autoload -U compinit && compinit
 
-    # Load hydectl completion
-    if command -v hydectl &>/dev/null; then
-        compdef _hydectl hydectl
-        eval "$(hydectl completion zsh)"
-    fi
-
-    # Initiate fzf
-    if command -v fzf &>/dev/null; then
-        eval "$(fzf --zsh)"
-    fi
+    for file in "${ZDOTDIR:-$HOME/.config/zsh}/completions/"*.zsh; do
+        [ -r "$file" ] && source "$file"
+    done
 
     # zsh-autosuggestions won't work on first prompt when deferred
     if typeset -f _zsh_autosuggest_start >/dev/null; then
@@ -183,7 +175,7 @@ elif [[ -f $ZDOTDIR/user.zsh ]]; then
 fi
 
 # Try to load prompts immediately
-[[ -f $ZDOTDIR/modules/hyde/prompt.zsh ]] && source $ZDOTDIR/modules/hyde/prompt.zsh
+[[ -f $ZDOTDIR/conf.d/hyde/prompt.zsh ]] && source $ZDOTDIR/conf.d/hyde/prompt.zsh
 
 _load_deferred_plugin_system_by_hyde
 
@@ -200,8 +192,7 @@ alias c='clear' \
     .3='cd ../../..' \
     .4='cd ../../../..' \
     .5='cd ../../../../..' \
-    mkdir='mkdir -p' \
-
+    mkdir='mkdir -p'
 
 # revert to proper ZDOTDIR
 export ZDOTDIR="${__ZDOTDIR:-${XDG_CONFIG_HOME:-$HOME/.config}/zsh}"

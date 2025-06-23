@@ -7,17 +7,14 @@
 #! ██████╔╝╚█████╔╝  ██║░╚███║╚█████╔╝░░░██║░░░  ███████╗██████╔╝██║░░░██║░░░
 #! ╚═════╝░░╚════╝░  ╚═╝░░╚══╝░╚════╝░░░░╚═╝░░░  ╚══════╝╚═════╝░╚═╝░░░╚═╝░░░
 
-# Load all custom module files // Directories are ignored
-# As Directories are ignored, we can store a bunch of boilerplate script in a ``./conf.d/custom-directory``
-# then we can make an entry point script: `./conf.d/custom-directory.zsh`managing all the files in that directory
 
-for file in "${ZDOTDIR:-$HOME/.config/zsh}/conf.d/"*.zsh; do
-  [ -r "$file" ] && source "$file"
-done
+# Sources vital global environment variables and configurations // Users are encouraged to use ./user.zsh for customization
+# shellcheck disable=SC1091
+if ! . "$ZDOTDIR/conf.d/hyde/env.zsh"; then
+    echo "Error: Could not source $ZDOTDIR/conf.d/hyde/env.zsh"
+    return 1
+fi
 
-
-# Load all custom function files // Directories are ignored
-for file in "${ZDOTDIR:-$HOME/.config/zsh}/functions/"*.zsh; do
-  [ -r "$file" ] && source "$file"
-done
-
+if [ -t 1 ] && [ -f "$ZDOTDIR/conf.d/hyde/terminal.zsh" ]; then
+    . "$ZDOTDIR/conf.d/hyde/terminal.zsh" || echo "Error: Could not source $ZDOTDIR/conf.d/hyde/terminal.zsh"
+fi
