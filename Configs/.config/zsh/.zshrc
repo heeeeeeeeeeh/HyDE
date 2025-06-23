@@ -42,23 +42,3 @@
 export EDITOR=code
 
 # unset -f command_not_found_handler # Uncomment to prevent searching for commands not found in package manager
-
-# ---
-export EDITOR=vscodium
-
-alias vc='vscodium'
-alias GC='gh copilot'
-alias GCE='gh copilot explain'
-alias GCS='gh copilot suggest'
-alias vi='nvim'
-# alias find='fd'
-
-# # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
-# [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
-
-# [[ -f ~/.nvimsrc ]] && source ~/.nvimsrc
-#
-#
-# unset -f command_not_found_handler
-source ~/.nvimsrc
-
