@@ -1,0 +1,10 @@
+{
+  "custom/mediaplayer": {
+    "exec": "hyde-shell mediaplayer.py",
+    "return-type": "json",
+    "format": "{}",
+    "on-click": "pkill -SIGUSR2 -f 'python3 /home/silve/.config/waybar/waybar-mediaplayer/src/mediaplayer monitor'",
+    "on-scroll-up": "hyde-shell mediaplayer.py next",
+    "on-scroll-down": "hyde-shell mediaplayer.py previous",
+  },
+}
