@@ -126,6 +126,7 @@ _load_deferred_plugin_system_by_hyde() {
 
     #? Methods to load oh-my-zsh lazily
     __ZDOTDIR="${ZDOTDIR:-${XDG_CONFIG_HOME:-$HOME/.config}/zsh}"
+    # Temporarily set ZDOTDIR to /tmp to isolate deferred plugin loading from the user's primary configuration directory.
     ZDOTDIR=/tmp
     zle -N zle-line-init _load_omz_on_init # Loads when the line editor initializes // The best option
 
