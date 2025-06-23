@@ -77,7 +77,7 @@ P|${HOME}/.config/starship|starship.toml|starship
 P|${HOME}/.config/zsh|.p10k.zsh|zsh zsh-theme-powerlevel10k
 
 S|${HOME}|.zshenv|zsh
-S|${HOME}/.config/zsh| .zshenv user.zsh|zsh
+S|${HOME}/.config/zsh|.zshenv user.zsh|zsh
 S|${HOME}/.config/zsh/modules|hyde 00-hyde.zsh error-handlers.zsh |zsh
 S|${HOME}/.config/zsh/modules|fzf.zsh|zsh fzf
 S|${HOME}/.config/zsh/modules|duf.zsh|zsh duf

@@ -93,7 +93,7 @@ deploy_psv() {
 
         # Check if ctlFlag is not one of the values 'O', 'R', 'B', 'S', or 'P'
         if [[ "${ctlFlag}" = "I" ]]; then
-            print_log -r "[ignore] ::" "${pth}/${cfg}"
+            print_log -r "[ignore] :: " "${pth}/${cfg}"
             continue 2
         fi
 
