@@ -24,6 +24,7 @@ logger = logger.get_logger()
 # for each player.  Key = player_name
 #
 players_data = {}
+currentplayer = None
 
 
 def load_env_file(filepath: str) -> None:
@@ -95,9 +96,7 @@ def format_artist_track(artist, track, playing, max_length):
             if len(track) != len(track[:track_limit]):
                 track = track[:track_limit].rstrip() + "…"
 
-        output_text = (
-            f"{prefix}{prefix_separator}<i>{artist}</i>{artist_track_separator}<b>{track}</b>"
-        )
+        output_text = f"{prefix}{prefix_separator}<i>{artist}</i>{artist_track_separator}<b>{track}</b>"
     else:
         output_text = "<b>Nothing playing</b>"
     return output_text
@@ -118,6 +117,10 @@ def write_output(track, artist, playing, player, tooltip_text):
 
 
 def on_play(player, status, manager):
+    set_player(manager, player)
+
+
+def on_playback_changed(player, status, manager):
     logger.info("Received new playback status")
     on_metadata(player, player.props.metadata, manager)
 
@@ -157,9 +160,9 @@ def on_metadata(player, metadata, manager):
     write_output(track, artist, playing, player, tooltip_text)
 
 
-def on_player_appeared(manager, player, selected_player=None):
+def on_player_appeared(manager, player, selected_players=None):
     if player is not None and (
-        selected_player is None or player.name == selected_player
+        selected_players is None or player.name in selected_players
     ):
         init_player(manager, player)
     else:
@@ -189,7 +192,8 @@ def on_player_vanished(manager, player, loop):
 def init_player(manager, name):
     logger.debug("Initialize player: {player}".format(player=name.name))
     player = Playerctl.Player.new_from_name(name)
-    player.connect("playback-status", on_play, manager)
+    player.connect("playback-status", on_playback_changed, manager)
+    player.connect("playback-status::playing", on_play, manager)
     player.connect("metadata", on_metadata, manager)
     manager.manage_player(player)
     on_metadata(player, player.props.metadata, manager)
@@ -240,7 +244,7 @@ def parse_arguments():
     )
 
     # Define for which player we're listening
-    parser.add_argument("--player", help="Specify the player to listen to.")
+    parser.add_argument("--players", nargs="*", type=str)
 
     return parser.parse_args()
 
@@ -295,10 +299,12 @@ def main():
     logger.debug("Arguments received {}".format(vars(arguments)))
 
     manager = Playerctl.PlayerManager()
+    if not arguments.players:
+        arguments.players = [name.name for name in manager.props.player_names]
     loop = GLib.MainLoop()
 
     manager.connect(
-        "name-appeared", lambda *args: on_player_appeared(*args, arguments.player)
+        "name-appeared", lambda *args: on_player_appeared(*args, arguments.players)
     )
     manager.connect("player-vanished", lambda *args: on_player_vanished(*args, loop))
 
@@ -306,15 +312,16 @@ def main():
     signal.signal(signal.SIGTERM, signal_handler)
     signal.signal(signal.SIGPIPE, signal.SIG_DFL)
 
+    found = [None] * len(arguments.players)
     for player in manager.props.player_names:
-        if arguments.player is not None and arguments.player != player.name:
+        if arguments.players is not None and player.name not in arguments.players:
             logger.debug(
                 "{player} is not the filtered player, skipping it".format(
                     player=player.name
                 )
             )
             continue
-
+        found[arguments.players.index(player.name)] = player
         init_player(manager, player)
         player_found = True
 
@@ -329,11 +336,23 @@ def main():
 
         sys.stdout.write(json.dumps(output) + "\n")
         sys.stdout.flush()
+    else:
+        p = next(player for player in found if player is not None)
+        set_player(manager, Playerctl.Player.new_from_name(p))
 
     # Set up a single 1-second timer to update song position
     GLib.timeout_add_seconds(1, update_positions, manager)
 
     loop.run()
+
+
+def set_player(manager, player):
+    global currentplayer
+    if currentplayer:
+        if currentplayer.props.player_name != player.props.player_name:
+            currentplayer.pause()
+    currentplayer = player
+    manager.move_player_to_top(player)
 
 
 if __name__ == "__main__":
