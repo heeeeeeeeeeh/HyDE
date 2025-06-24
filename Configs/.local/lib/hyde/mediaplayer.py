@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import os
+from re import split
 import gi
 
 gi.require_version("Playerctl", "2.0")
@@ -285,6 +286,9 @@ def main():
     time_color = os.getenv(
         "MEDIAPLAYER_TOOLTIP_TIME_COLOR", "#" + os.getenv("dcol_txt1", "FFFFFF")
     )
+    players = os.getenv("MEDIAPLAYER_PLAYERS", None)
+    if players:
+        players = players.split(",")
 
     arguments = parse_arguments()
     player_found = False
@@ -299,8 +303,10 @@ def main():
     logger.debug("Arguments received {}".format(vars(arguments)))
 
     manager = Playerctl.PlayerManager()
-    if not arguments.players:
-        arguments.players = [name.name for name in manager.props.player_names]
+    if not arguments.players and not players:
+        players = [name.name for name in manager.props.player_names]
+    elif arguments.players:
+        players = arguments.players
     loop = GLib.MainLoop()
 
     manager.connect(
@@ -312,16 +318,16 @@ def main():
     signal.signal(signal.SIGTERM, signal_handler)
     signal.signal(signal.SIGPIPE, signal.SIG_DFL)
 
-    found = [None] * len(arguments.players)
+    found = [None] * len(players)
     for player in manager.props.player_names:
-        if arguments.players is not None and player.name not in arguments.players:
+        if players is not None and player.name not in players:
             logger.debug(
                 "{player} is not the filtered player, skipping it".format(
                     player=player.name
                 )
             )
             continue
-        found[arguments.players.index(player.name)] = player
+        found[players.index(player.name)] = player
         init_player(manager, player)
         player_found = True
 
