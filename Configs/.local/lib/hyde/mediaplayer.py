@@ -264,7 +264,7 @@ def parse_arguments():
 
 def main():
     global prefix_playing, prefix_paused, max_length_module, standby_text, artist_track_separator
-    global artist_color, track_color, progress_color, empty_color, time_color
+    global artist_color, artist_weight, track_color, progress_color, empty_color, time_color
 
     # Load environment variables from your config file:
     config_file = os.path.join(xdg_state_home(), "hyde", "config")
@@ -298,6 +298,7 @@ def main():
     time_color = os.getenv(
         "MEDIAPLAYER_TOOLTIP_TIME_COLOR", "#" + os.getenv("dcol_txt1", "FFFFFF")
     )
+    artist_weight = os.getenv("MEDIAPLAYER_ARTIST_WEIGHT", 0.65)
     players = os.getenv("MEDIAPLAYER_PLAYERS", None)
     if players:
         players = players.split(",")
