@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import os
 from re import split
+from warnings import catch_warnings
 import gi
 
 gi.require_version("Playerctl", "2.0")
@@ -198,6 +199,7 @@ def init_player(manager, name):
     player.connect("metadata", on_metadata, manager)
     manager.manage_player(player)
     on_metadata(player, player.props.metadata, manager)
+    return player
 
 
 def update_positions(manager):
@@ -327,8 +329,8 @@ def main():
                 )
             )
             continue
-        found[players.index(player.name)] = player
-        init_player(manager, player)
+        p = init_player(manager, player)
+        found[players.index(player.name)] = p
         player_found = True
 
     # If no player is found, generate the standby output
@@ -343,8 +345,14 @@ def main():
         sys.stdout.write(json.dumps(output) + "\n")
         sys.stdout.flush()
     else:
-        p = next(player for player in found if player is not None)
-        set_player(manager, Playerctl.Player.new_from_name(p))
+        found = list(filter(lambda x: x is not None, found))
+        try:
+            p = next(player for player in found if player.props.status == "Playing")
+        except StopIteration:
+            p = None
+        if not p:
+            p = found[0]
+        set_player(manager, p)
 
     # Set up a single 1-second timer to update song position
     GLib.timeout_add_seconds(1, update_positions, manager)
