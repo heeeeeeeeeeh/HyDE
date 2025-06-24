@@ -319,6 +319,9 @@ def main():
     signal.signal(signal.SIGINT, signal_handler)
     signal.signal(signal.SIGTERM, signal_handler)
     signal.signal(signal.SIGPIPE, signal.SIG_DFL)
+    signal.signal(signal.SIGUSR1, lambda *args: control_music(*args, "previous"))
+    signal.signal(signal.SIGUSR2, lambda *args: control_music(*args, "next"))
+    signal.signal(signal.SIGRTMIN, lambda *args: control_music(*args, "play_pause"))
 
     found = [None] * len(players)
     for player in manager.props.player_names:
@@ -367,6 +370,11 @@ def set_player(manager, player):
             currentplayer.pause()
     currentplayer = player
     manager.move_player_to_top(player)
+
+
+def control_music(sig, frame, action):
+    if currentplayer:
+        getattr(currentplayer, action)()
 
 
 if __name__ == "__main__":
