@@ -57,7 +57,7 @@ def format_time(seconds) -> str:
 
 
 def create_tooltip_text(
-    artist, track, current_position_seconds, duration_seconds
+    artist, track, current_position_seconds, duration_seconds, p_name
 ) -> str:
     """
     Build the tooltip text showing artist, track, and current position vs duration.
@@ -66,7 +66,7 @@ def create_tooltip_text(
     tooltip = ""
 
     if artist or track:
-        tooltip += f'<span foreground="{track_color}"><b>{track}</b></span>\n<span foreground="{artist_color}"><i>{artist}</i></span>\n'
+        tooltip += f'<span foreground="{track_color}"><b>{track}</b></span>\n<span foreground="{artist_color}"><i>{artist}</i></span>\n<span>{p_name}</span>\n'
         if duration_seconds > 0:
             progress = int((current_position_seconds / duration_seconds) * 20)
             bar = f'<span foreground="{progress_color}">{"━" * progress}</span><span foreground="{empty_color}">{"─" * (20 - progress)}</span>'
@@ -228,7 +228,7 @@ def update_positions(manager):
         current_position_seconds = player.get_position() / 1e6
         tooltip_text += (
             create_tooltip_text(
-                artist, track, current_position_seconds, duration_seconds
+                artist, track, current_position_seconds, duration_seconds, p_name
             )
             + "\n\n"
         )
