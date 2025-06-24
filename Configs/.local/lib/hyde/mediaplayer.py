@@ -165,12 +165,6 @@ def on_metadata(player, metadata, manager):
         "duration": duration_seconds,
     }
 
-    # Build the tooltip
-    tooltip_text = create_tooltip_text(
-        artist, track, current_position_seconds, duration_seconds
-    )
-    write_output(track, artist, playing, player, tooltip_text)
-
 
 def on_player_appeared(manager, player, selected_players=None):
     if player is not None and (
@@ -219,6 +213,7 @@ def update_positions(manager):
     updates the tooltip, and rewrites the output to stdout.
     """
     # manager.props.players gives us the current active Player objects
+    tooltip_text = ""
     for player in manager.props.players:
         p_name = player.props.player_name
         # If we haven't stored metadata for this player yet, skip
@@ -231,11 +226,21 @@ def update_positions(manager):
         duration_seconds = players_data[p_name]["duration"]
 
         current_position_seconds = player.get_position() / 1e6
-        tooltip_text = create_tooltip_text(
-            artist, track, current_position_seconds, duration_seconds
+        tooltip_text += (
+            create_tooltip_text(
+                artist, track, current_position_seconds, duration_seconds
+            )
+            + "\n\n"
         )
 
-        write_output(track, artist, playing, player, tooltip_text)
+    player = manager.props.players[0]
+    p_name = player.props.player_name
+    playing = player.props.status == "Playing"
+    track = players_data[p_name]["track"]
+    artist = players_data[p_name]["artist"]
+    duration_seconds = players_data[p_name]["duration"]
+
+    write_output(track, artist, playing, player, tooltip_text)
 
     # Return True so the timer continues calling this function
     return True
