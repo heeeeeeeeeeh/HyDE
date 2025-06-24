@@ -90,9 +90,18 @@ def format_artist_track(artist, track, playing, max_length):
         if full_length > max_length:
             # proportion how to share max length between track and artist
             artist_weight = 0.65
-            track_weight = 1 - artist_weight
-            artist_limit = int(max_length * artist_weight)
-            track_limit = int(max_length * track_weight)
+            artist_limit = min(int(max_length * artist_weight), len(artist))
+            a_gain = max(0, artist_weight - (artist_limit / max_length))
+            track_weight = 1 - artist_weight + a_gain
+            track_limit = min(int(max_length * track_weight), len(track))
+            t_gain = max(0, track_weight - (track_limit / max_length))
+
+            if a_gain == 0 and t_gain > 0:
+                gain = int(max_length * t_gain)
+                artist_limit = artist_limit + gain
+            elif a_gain > 0 and t_gain == 0:
+                gain = int(max_length * t_gain)
+                artist_limit = artist_limit + gain
 
             if len(artist) != len(artist[:artist_limit]):
                 artist = artist[:artist_limit].rstrip() + "…"
