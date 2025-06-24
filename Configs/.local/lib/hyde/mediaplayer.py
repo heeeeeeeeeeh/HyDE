@@ -86,6 +86,7 @@ def format_artist_track(artist, track, playing, max_length):
             track = track[:max_length].rstrip() + "…"
         output_text = f"{prefix}{prefix_separator}<b>{track}</b>"
     elif track and artist:
+        artist = artist.split(",")[0].split("&")[0].strip()
         if full_length > max_length:
             # proportion how to share max length between track and artist
             artist_weight = 0.65
