@@ -108,10 +108,10 @@ def write_output(track, artist, playing, player, tooltip_text):
     logger.info("Writing output")
 
     output_data = {
-        "text": format_artist_track(artist, track, playing, max_length_module),
+        "text": escape(format_artist_track(artist, track, playing, max_length_module)),
         "class": "custom-" + player.props.player_name,
         "alt": player.props.player_name,
-        "tooltip": tooltip_text,
+        "tooltip": escape(tooltip_text),
     }
 
     sys.stdout.write(json.dumps(output_data) + "\n")
@@ -375,6 +375,10 @@ def set_player(manager, player):
 def control_music(sig, frame, action):
     if currentplayer:
         getattr(currentplayer, action)()
+
+
+def escape(string):
+    return string.replace("&", "&amp;")
 
 
 if __name__ == "__main__":
