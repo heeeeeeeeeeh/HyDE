@@ -263,6 +263,7 @@ def parse_arguments():
 
     # Define for which player we're listening
     parser.add_argument("--players", nargs="*", type=str)
+    parser.add_argument("--player", type=str)
 
     return parser.parse_args()
 
@@ -321,10 +322,12 @@ def main():
     logger.debug("Arguments received {}".format(vars(arguments)))
 
     manager = Playerctl.PlayerManager()
-    if not arguments.players and not players:
+    if not (arguments.players or arguments.player) and not players:
         players = [name.name for name in manager.props.player_names]
     elif arguments.players:
         players = arguments.players
+    elif arguments.player:
+        players = [arguments.player]
     loop = GLib.MainLoop()
 
     manager.connect(
