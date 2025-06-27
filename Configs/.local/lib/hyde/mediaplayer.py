@@ -213,34 +213,35 @@ def update_positions(manager):
     updates the tooltip, and rewrites the output to stdout.
     """
     # manager.props.players gives us the current active Player objects
-    tooltip_text = ""
-    for player in manager.props.players:
-        p_name = player.props.player_name
-        # If we haven't stored metadata for this player yet, skip
-        if p_name not in players_data:
-            continue
+    if manager.props.players:
+        tooltip_text = ""
+        for player in manager.props.players:
+            p_name = player.props.player_name
+            # If we haven't stored metadata for this player yet, skip
+            if p_name not in players_data:
+                continue
 
+            playing = player.props.status == "Playing"
+            track = players_data[p_name]["track"]
+            artist = players_data[p_name]["artist"]
+            duration_seconds = players_data[p_name]["duration"]
+
+            current_position_seconds = player.get_position() / 1e6
+            tooltip_text += (
+                create_tooltip_text(
+                    artist, track, current_position_seconds, duration_seconds, p_name
+                )
+                + "\n\n"
+            )
+
+        player = manager.props.players[0]
+        p_name = player.props.player_name
         playing = player.props.status == "Playing"
         track = players_data[p_name]["track"]
         artist = players_data[p_name]["artist"]
         duration_seconds = players_data[p_name]["duration"]
 
-        current_position_seconds = player.get_position() / 1e6
-        tooltip_text += (
-            create_tooltip_text(
-                artist, track, current_position_seconds, duration_seconds, p_name
-            )
-            + "\n\n"
-        )
-
-    player = manager.props.players[0]
-    p_name = player.props.player_name
-    playing = player.props.status == "Playing"
-    track = players_data[p_name]["track"]
-    artist = players_data[p_name]["artist"]
-    duration_seconds = players_data[p_name]["duration"]
-
-    write_output(track, artist, playing, player, tooltip_text)
+        write_output(track, artist, playing, player, tooltip_text)
 
     # Return True so the timer continues calling this function
     return True
