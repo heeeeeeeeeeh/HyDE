@@ -355,7 +355,9 @@ def main():
 
     found = [None] * len(players)
     for player in manager.props.player_names:
-        if players is not None and player.name not in players:
+        if (
+            players is not None and player.name not in players
+        ) or player.name == "plasma-browser-integration":
             logger.debug(
                 "{player} is not the filtered player, skipping it".format(
                     player=player.name
