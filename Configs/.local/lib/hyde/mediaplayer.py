@@ -353,8 +353,16 @@ def main():
             continue
         p = init_player(manager, player)
         found[players.index(player.name)] = p
+    if found:
+        found = list(filter(lambda x: x is not None, found))
+        try:
+            p = next(player for player in found if player.props.status == "Playing")
+        except StopIteration:
+            p = None
+        if not p:
+            p = found[0]
+        set_player(manager, p)
         player_found = True
-
     # If no player is found, generate the standby output
     if not player_found:
         output = {
@@ -366,15 +374,6 @@ def main():
 
         sys.stdout.write(json.dumps(output) + "\n")
         sys.stdout.flush()
-    else:
-        found = list(filter(lambda x: x is not None, found))
-        try:
-            p = next(player for player in found if player.props.status == "Playing")
-        except StopIteration:
-            p = None
-        if not p:
-            p = found[0]
-        set_player(manager, p)
 
     # Set up a single 1-second timer to update song position
     GLib.timeout_add_seconds(1, update_positions, manager)
