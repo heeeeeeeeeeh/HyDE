@@ -326,16 +326,23 @@ def main():
     logger.debug("Arguments received {}".format(vars(arguments)))
 
     manager = Playerctl.PlayerManager()
+    choose = False
     if not (arguments.players or arguments.player) and not players:
         players = [name.name for name in manager.props.player_names]
-    elif arguments.players:
-        players = arguments.players
-    elif arguments.player:
-        players = [arguments.player]
+    else:
+        choose = True
+        if arguments.players:
+            players = arguments.players
+        elif arguments.player:
+            players = [arguments.player]
     loop = GLib.MainLoop()
 
     manager.connect(
-        "name-appeared", lambda *args: on_player_appeared(*args, arguments.players)
+        "name-appeared",
+        # if player didn't select a player(s)
+        # then allow all mediaplayer.py to watch
+        # all players that appear
+        lambda *args: on_player_appeared(*args, players if choose else []),
     )
     manager.connect("player-vanished", lambda *args: on_player_vanished(*args, loop))
 
