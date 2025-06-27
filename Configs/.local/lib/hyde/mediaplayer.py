@@ -177,22 +177,25 @@ def on_player_appeared(manager, player, selected_players=None):
 
 def on_player_vanished(manager, player, loop):
     logger.info("Player has vanished")
+    if currentplayer.props.player_name == player.props.player_name:
+        if manager.props.players:
+            set_player(manager, manager.props.players[0])
+            on_metadata(player, player.props.metadata, manager)
+            update_positions(manager)
 
-    # Remove from our stored dictionary
-    p_name = player.props.player_name
-    if p_name in players_data:
-        del players_data[p_name]
-
-    # Output "standby" text
-    output = {
-        "text": standby_text,
-        "class": "custom-nothing-playing",
-        "alt": "player-closed",
-        "tooltip": "",
-    }
-
-    sys.stdout.write(json.dumps(output) + "\n")
-    sys.stdout.flush()
+        # Remove from our stored dictionary
+        p_name = player.props.player_name
+        if p_name in players_data:
+            del players_data[p_name]
+        # Output "standby" text
+        output = {
+            "text": standby_text,
+            "class": "custom-nothing-playing",
+            "alt": "player-closed",
+            "tooltip": "",
+        }
+        sys.stdout.write(json.dumps(output) + "\n")
+        sys.stdout.flush()
 
 
 def init_player(manager, name):
