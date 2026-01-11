@@ -39,8 +39,9 @@ flg_DryRun=0
 flg_Shell=0
 flg_Nvidia=1
 flg_ThemeInstall=1
+flg_Headless=0
 
-while getopts idrstmnh RunStep; do
+while getopts idrstmnhl RunStep; do
 	case $RunStep in
 	i) flg_Install=1 ;;
 	d)
@@ -61,6 +62,7 @@ while getopts idrstmnh RunStep; do
 		;;
 	t) flg_DryRun=1 ;;
 	m) flg_ThemeInstall=0 ;;
+  l) flg_Headless=1 ;;
 	*)
 		cat <<EOF
 Usage: $0 [options]
@@ -88,11 +90,11 @@ done
 
 # Only export that are used outside this script
 HYDE_LOG="$(date +'%y%m%d_%Hh%Mm%Ss')"
-export flg_DryRun flg_Nvidia flg_Shell flg_Install flg_ThemeInstall HYDE_LOG
+export flg_Headless flg_DryRun flg_Nvidia flg_Shell flg_Install flg_ThemeInstall HYDE_LOG
 
 if [ "${flg_DryRun}" -eq 1 ]; then
 	print_log -n "[test-run] " -b "enabled :: " "Testing without executing"
-elif [ $OPTIND -eq 1 ]; then
+elif [ $OPTIND -eq 1 ] || [ $flg_Headless -eq 1 ]; then
 	flg_Install=1
 	flg_Restore=1
 	flg_Service=1
@@ -135,6 +137,11 @@ EOF
 	custom_pkg=$1
 	cp "${scrDir}/pkg_core.lst" "${scrDir}/install_pkg.lst"
 	trap 'mv "${scrDir}/install_pkg.lst" "${cacheDir}/logs/${HYDE_LOG}/install_pkg.lst"' EXIT
+
+  if [[ flg_Headless -ne 1 ]]; then
+    cat "${scrDir}/pkg_core_graphical.lst" >>"${scrDir}install_pkg.lst"
+    cat "${scrDir}/pkg_extra_graphical.lst" >>"${scrDir}install_pkg.lst"
+  fi
 
 	echo -e "\n#user packages" >>"${scrDir}/install_pkg.lst" # Add a marker for user packages
 	if [ -f "${custom_pkg}" ] && [ -n "${custom_pkg}" ]; then

@@ -31,6 +31,10 @@ handle_legacy_service() {
 # Main processing
 print_log -sec "services" -stat "restore" "system services..."
 
+if [ flg_Headless -ne 1 ];then
+  graphSvc="${scrDir}/svc_graphical.lst"
+fi
+
 while IFS='|' read -r service context command || [ -n "$service" ]; do
     # Skip empty lines and comments
     [[ -z "$service" || "$service" =~ ^[[:space:]]*# ]] && continue
@@ -70,6 +74,6 @@ while IFS='|' read -r service context command || [ -n "$service" ]; do
         fi
     fi
     
-done < "${scrDir}/restore_svc.lst"
+done < <(cat "${scrDir}/restore_svc.lst $graphSvc")
 
 print_log -sec "services" -stat "completed" "service updated successfully"
